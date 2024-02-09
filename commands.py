@@ -38,7 +38,33 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if id in USERS:
         response = request_chat_gpt(update.message.text)
-        await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+        await context.bot.sendChatAction(
+            chat_id=update.message.chat_id, action=ChatAction.TYPING, read_timeout=10
+        )
+        if type(response) is str:
+            char = [
+                "[",
+                "]",
+                "(",
+                ")",
+                "~",
+                ">",
+                "#",
+                "+",
+                "-",
+                "=",
+                "|",
+                "{",
+                "}",
+                ".",
+                "!",
+            ]
+            for c in char:
+                if c in response:
+                    response: str = response.replace(c, "\\" + c)
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id, text=response, parse_mode="MarkdownV2"
+            )
 
     else:
         await context.bot.send_message(
