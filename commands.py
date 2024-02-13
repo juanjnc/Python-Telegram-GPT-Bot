@@ -23,9 +23,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Hola, soy el mensajero entre ustéd, su estupidez y chatGPT.\n\n"
-        "Simplemente escribe un mensaje y yo te daré la respuesta.\n\n"
-        "Por el momento no se guarda contexto de la conversación, disculpe las molestias",
+        text="Hello, I am the messenger between you and chatGPT.\n\n"
+        "Just write a message and I will give you the answer.\n\n"
+        "Type /img promp-you-want to generate an image.\n\n"
+        "At the moment no context of the conversation is saved, sorry for the inconvenience.",
     )
 
 
