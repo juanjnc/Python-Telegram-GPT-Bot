@@ -1,14 +1,15 @@
 import traceback
-from env import USERS
+from env import USERS, CHAR
 import logging
 import html
 import json
-from gpt_api import request_chat_gpt
+from gpt_api import request_chat_gpt, request_dall_e
 from telegram.constants import ChatAction, ParseMode
 from telegram import Update
 from telegram.ext import (
     ContextTypes,
 )
+
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.WARNING
@@ -22,10 +23,47 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text="Hi, I'm the messenger between you and chatGPT.\n\n"
-        "Just write a message and I will give you the answer..\n\n"
-        "For the moment no context of the conversation is saved, sorry for the inconvenience.",
+        text="Hola, soy el mensajero entre ustéd, su estupidez y chatGPT.\n\n"
+        "Simplemente escribe un mensaje y yo te daré la respuesta.\n\n"
+        "Por el momento no se guarda contexto de la conversación, disculpe las molestias",
     )
+
+
+async def img(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    id = user.id
+    promp = update.message.text.replace("/img", "").replace("@YOUR_BOT_NAME", "")
+
+    await context.bot.sendChatAction(
+        chat_id=update.message.chat_id, action=ChatAction.TYPING, read_timeout=15
+    )
+
+    if id in USERS:
+        response = request_dall_e(promp)
+        await context.bot.sendChatAction(
+            chat_id=update.message.chat_id, action=ChatAction.TYPING, read_timeout=10
+        )
+
+        try:
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id, photo=open(response, "rb")
+            )
+
+            await context.bot.send_document(
+                chat_id=update.effective_chat.id, document=open(response, "rb")
+            )
+
+        except Exception:
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=response,
+            )
+
+    else:
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="No tienes permiso para usar este bot",
+        )
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -42,23 +80,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
             chat_id=update.message.chat_id, action=ChatAction.TYPING, read_timeout=10
         )
         if type(response) is str:
-            char = [
-                "[",
-                "]",
-                "(",
-                ")",
-                "~",
-                ">",
-                "#",
-                "+",
-                "-",
-                "=",
-                "|",
-                "{",
-                "}",
-                ".",
-                "!",
-            ]
+            char = CHAR
             for c in char:
                 if c in response:
                     response: str = response.replace(c, "\\" + c)
@@ -69,7 +91,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="You are not allowed to use this bot",
+            text="No tienes permiso para usar este bot",
         )
 
 
