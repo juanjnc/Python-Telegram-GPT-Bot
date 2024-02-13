@@ -25,7 +25,7 @@ def request_chat_gpt(user_message):
 
 def request_dall_e(user_message):
     """
-    Supports aonly Dall-E 3
+    Supports only Dall-E 3
     """
     try:
         response = client.images.generate(
