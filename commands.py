@@ -62,7 +62,7 @@ async def img(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="No tienes permiso para usar este bot",
+            text="You are not allowed to use this bot",
         )
 
 
@@ -91,7 +91,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text="No tienes permiso para usar este bot",
+            text="You are not allowed to use this bot",
         )
 
 
