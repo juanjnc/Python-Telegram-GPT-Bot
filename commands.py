@@ -35,13 +35,13 @@ async def img(update: Update, context: ContextTypes.DEFAULT_TYPE):
     promp = update.message.text.replace("/img", "").replace("@YOUR_BOT_NAME", "")
 
     await context.bot.sendChatAction(
-        chat_id=update.message.chat_id, action=ChatAction.TYPING, read_timeout=15
+        chat_id=update.message.chat_id, action=ChatAction.UPLOAD_PHOTO, read_timeout=15
     )
 
     if id in USERS:
         response = request_dall_e(promp)
         await context.bot.sendChatAction(
-            chat_id=update.message.chat_id, action=ChatAction.TYPING, read_timeout=10
+            chat_id=update.message.chat_id, action=ChatAction.UPLOAD_PHOTO, read_timeout=10
         )
 
         try:
